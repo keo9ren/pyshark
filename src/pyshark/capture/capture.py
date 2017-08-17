@@ -42,13 +42,14 @@ class Capture(object):
     def __init__(self, display_filter=None, only_summaries=False, eventloop=None,
                  decryption_key=None, encryption_type='wpa-pwd', output_file=None,
                  decode_as=None,  disable_protocol=None, tshark_path=None,
-                 override_prefs=None, capture_filter=None, use_json=False):
+                 override_prefs=None, capture_filter=None, use_json=False, include_raw=False):
 
         self.loaded = False
         self.tshark_path = tshark_path
         self._override_prefs = override_prefs
         self.debug = False
         self.use_json = use_json
+        self.include_raw = include_raw
         self._packets = []
         self._current_packet = 0
         self._display_filter = display_filter
@@ -428,6 +429,8 @@ class Capture(object):
             params += ['-f', self._capture_filter]
         if self._display_filter:
             params += [get_tshark_display_filter_flag(self.tshark_path), self._display_filter]
+        if self.include_raw:
+            params += ["-x"]
         if packet_count:
             params += ['-c', str(packet_count)]
         if all(self.encryption):
